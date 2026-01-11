@@ -67,3 +67,40 @@ def deletar_cliente(cliente_id):
     con.commit()
     cur.close()
     con.close()
+
+# ---------- TELEFONES ----------
+def listar_telefones(cliente_id):
+    con = conectar()
+    cur = con.cursor()
+    cur.execute("""
+        SELECT numero, tipo
+        FROM cliente_telefones
+        WHERE clientes_id=%s
+    """, (cliente_id,))
+    telefones = cur.fetchall()
+    cur.close()
+    con.close()
+    return telefones
+
+def remover_telefones(cliente_id):
+    con = conectar()
+    cur = con.cursor()
+    cur.execute(
+        "DELETE FROM cliente_telefones WHERE clientes_id=%s",
+        (cliente_id,)
+    )
+    con.commit()
+    cur.close()
+    con.close()
+
+def inserir_telefones(cliente_id, telefones):
+    con = conectar()
+    cur = con.cursor()
+    for numero, tipo in telefones:
+        cur.execute("""
+            INSERT INTO cliente_telefones (numero, tipo, clientes_id)
+            VALUES (%s,%s,%s)
+        """, (numero, tipo, cliente_id))
+    con.commit()
+    cur.close()
+    con.close()
